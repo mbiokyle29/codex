@@ -3,7 +3,6 @@ use Mouse;
 
 use DateTime;
 
-
 # string The unique sample id
 has 'id' => (
 	isa => 'Str', 
@@ -46,5 +45,6 @@ has 'upload_status' => (
 	is => 'ro', 
 	required => 1
 );
+
 
 1;

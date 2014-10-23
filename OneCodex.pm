@@ -1,6 +1,7 @@
 package OneCodex;
 use Mouse;
 use Data::Printer;
+use feature 'say';
 
 # API objects
 use OneCodex::Analysis;
@@ -8,11 +9,14 @@ use OneCodex::Reference;
 use OneCodex::Sample;
 use OneCodex::Collection;
 
-# For network call
+# For api calls
 use Mojo::UserAgent;
 
-has 'api_key'   => (isa => 'Str', is => 'ro', required => 1);
-has '_ua'       => (isa => 'Mojo::UserAgent', is => 'ro', builder => '_build_ua', lazy => 1);
+has 'api_key' => (
+	isa => 'Str', 
+	is => 'ro', 
+	required => 1
+);
 
 has 'api_root'  => (
 	isa => 'Str', 
@@ -21,30 +25,58 @@ has 'api_root'  => (
 	builder => sub { return "https://".shift->api_key.":\@beta.onecodex.com/api/v0/"; }
 );
 
+# Private instance of mojo ua for making api calls
+has '_ua' => (
+	isa => 'Mojo::UserAgent', 
+	is => 'ro', 
+	builder => '_build_ua', 
+	lazy => 1
+);
+
 # Test connectivity
 sub connected {
 	my $self = shift;
 	my $res = $self->_ua->get('https://onecodex.com')->res;
+
+	# Check for 2xx HTTP code
 	return $res->code =~ m/2[0-9]{2}/;
 }
 
-# Authenticate
-sub authenticate {
-	my $self = shift;
-	my $res = $self->_ua->get($self->api_root)->res;
-	return $res->code != 401;
+# Upload
+sub upload {
+	my ($self, $file) = @_;
+	
+	# Make sure file exists
+	unless (-e $file) {
+		say "$file does not exist!";
+		return;
+	}
+
+	# Build and send request
+	my $end_point = $self->api_root."upload";
+	
+	my $post = $self->_ua->post(
+		$end_point => {'Content-Type' => 'multipart/form-data'} => 
+		form => {filename => {file => $file}}
+	)->res->json;
+	
+	return $$post{sample_id};
 }
 
-# Samples
+## Samples
+
+# Get all samples
 sub get_samples {
 	my $self = shift;
 
 	# Set up URL
 	my $end_point = $self->api_root."samples";
 	my $res = $self->_ua->get($end_point)->res->json;
-	p($res);
 	return $res;
 }
+
+# Get one sample by id
+# id -> id for sample to fetch
 sub get_sample {
 	my ($self, $id) = @_;
 
@@ -54,6 +86,54 @@ sub get_sample {
 	my $sample = OneCodex::Sample->new($res);
 	return $sample;
 }
+
+## Analyses
+
+# Get all analyses
+sub get_analyses {
+	my $self = shift;
+
+	# Set up URL
+	my $end_point = $self->api_root."analyses";
+	my $res = $self->_ua->get($end_point)->res->json;
+	return $res;
+}
+
+# Get one analysis by id
+# id -> id for analysis to fetch
+sub get_analysis {
+	my ($self, $id) = @_;
+
+	# Set up URL
+	my $end_point = $self->api_root."analyses/$id";
+	my $res = $self->_ua->get($end_point)->res->json;
+	my $analysis = OneCodex::Analysis->new($res);
+}
+
+## References
+
+# Get all references
+sub get_references {
+	my $self = shift;
+
+	# Set up URL
+	my $end_point = $self->api_root."references";
+	my $res = $self->_ua->get($end_point)->res->json;
+	return $res;
+}
+
+# Get one reference by id
+# id -> id for reference to fetch
+sub get_reference {
+	my ($self, $id) = @_;
+
+	# Set up URL
+	my $end_point = $self->api_root."references/$id";
+	my $res = $self->_ua->get($end_point)->res->json;
+	my $reference = OneCodex::Reference->new($res);
+}
+
+## Private ##
 
 # Initalize user agent instance
 sub _build_ua {

@@ -16,17 +16,19 @@ has 'analysis_status' => (
 );
 
 # int Number of reads or contigs in the sample
+# not required because failed/pending wont have
 has 'n_reads' => (
 	isa => 'Int',
 	is => 'rw',
-	required => 1
+	required => 0
 );
 
 # float Proportion of sample reads mapped against the reference (0 to 1)
+# not required because failed/pending wont have
 has 'p_mapped' => (
 	isa => 'Int',
 	is  => 'rw',
-	required => 1
+	required => 0
 );
 
 # string Unique string id of the reference database
