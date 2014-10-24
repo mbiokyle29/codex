@@ -110,6 +110,34 @@ sub get_analysis {
 	my $analysis = OneCodex::Analysis->new($res);
 }
 
+# Get one raw analysis by id
+# id -> id to fetch
+sub get_raw_analysis {
+	my ($self, $id) = @_;
+
+	# Set up URL
+	my $end_point = $self->api_root."analyses/$id/raw";
+	my $res = $self->_ua->max_redirects(5)->get($end_point)->res;
+	$res->content->asset->move_to("$id-results.tsv.gz");
+	
+
+	if($res->code == 404) {
+		die "Analysis $id was not found";
+	}
+}
+
+# Get one table analysis by id
+# id -> id to fetch
+sub get_table_analysis {
+	my ($self, $id) = @_;
+
+	# Set up URL
+	my $end_point = $self->api_root."analyses/$id/table";
+	my $res = $self->_ua->get($end_point)->res;
+	p($res->json);
+	return $res;
+}
+
 ## References
 
 # Get all references
