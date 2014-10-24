@@ -1,4 +1,4 @@
-package OneCodex::Sample;
+package Codex::Sample;
 use Mouse;
 
 use DateTime;

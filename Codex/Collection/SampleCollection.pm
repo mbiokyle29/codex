@@ -1,8 +1,8 @@
-package OneCodex::Collection::SampleCollection;
+package Codex::Collection::SampleCollection;
 use Mouse;
 
 has 'samples' => (
-	isa => 'ArrayRef[OneCodex::Sample]',
+	isa => 'ArrayRef[Codex::Sample]',
 	is  => 'rw'
 );
 

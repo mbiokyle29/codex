@@ -1,4 +1,4 @@
-package OneCodex::Reference;
+package Codex::Reference;
 use Mouse;
 
 # string Unique string id

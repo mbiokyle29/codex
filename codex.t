@@ -5,10 +5,10 @@ use Test::Simple tests => 13;
 use feature qw|say|;
 use Data::Printer;
 use File::Slurp;
-use OneCodex;
+use Codex;
 
 # Build and check connectivity
-ok(my $codex = OneCodex->new(api_key => shift), "Initalized api object");
+ok(my $codex = Codex->new(api_key => shift), "Initalized api object");
 ok($codex->connected() == 1, "Established connection with one codex");
 
 # uploads

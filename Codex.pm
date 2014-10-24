@@ -1,13 +1,13 @@
-package OneCodex;
+package Codex;
 use Mouse;
 use Data::Printer;
 use feature 'say';
 
 # API objects
-use OneCodex::Analysis;
-use OneCodex::Reference;
-use OneCodex::Sample;
-use OneCodex::Collection;
+use Codex::Analysis;
+use Codex::Reference;
+use Codex::Sample;
+use Codex::Collection;
 
 # For api calls
 use Mojo::UserAgent;

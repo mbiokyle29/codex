@@ -1,4 +1,4 @@
-package OneCodex::Analysis;
+package Codex::Analysis;
 use Mouse;
 
 # string Unique string id
