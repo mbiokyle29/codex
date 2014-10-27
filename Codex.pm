@@ -8,6 +8,7 @@ use Codex::Analysis;
 use Codex::Reference;
 use Codex::Sample;
 use Codex::Collection;
+use Codex::TableEntry;
 
 # For api calls
 use Mojo::UserAgent;
@@ -33,34 +34,24 @@ has '_ua' => (
 	lazy => 1
 );
 
-# Test connectivity
-sub connected {
-	my $self = shift;
-	my $res = $self->_ua->get('https://onecodex.com')->res;
-
-	# Check for 2xx HTTP code
-	return $res->code =~ m/2[0-9]{2}/;
-}
-
-# Upload
+# upload
+# file -> filename of the file to upload
+# returns id of sample uploaded or -1
 sub upload {
 	my ($self, $file) = @_;
 	
 	# Make sure file exists
 	unless (-e $file) {
 		say "$file does not exist!";
-		return;
+		return -1;
 	}
 
 	# Build and send request
 	my $end_point = $self->api_root."upload";
-	
-	my $post = $self->_ua->post(
-		$end_point => {'Content-Type' => 'multipart/form-data'} => 
-		form => {filename => {file => $file}}
-	)->res->json;
-	
-	return $$post{sample_id};
+	my $post_id = $self->post($end_point, $file);
+	if($post_id) {
+
+	}
 }
 
 ## Samples
@@ -71,8 +62,12 @@ sub get_samples {
 
 	# Set up URL
 	my $end_point = $self->api_root."samples";
-	my $res = $self->_ua->get($end_point)->res->json;
-	return $res;
+	my $res = $self->get($end_point);
+	if($res) {
+		foreach my $sample_json (@$res) {
+			my $sample = Codex::Sample->new($sample_json);
+		}		
+	}
 }
 
 # Get one sample by id
@@ -82,9 +77,11 @@ sub get_sample {
 
 	# Set up URL
 	my $end_point = $self->api_root."samples/$id";
-	my $res = $self->_ua->get($end_point)->res->json;
-	my $sample = OneCodex::Sample->new($res);
-	return $sample;
+	my $res = $self->get($end_point);
+	if($res) {
+		my $sample = Codex::Sample->new($res);
+		return $sample;		
+	}
 }
 
 ## Analyses
@@ -95,8 +92,11 @@ sub get_analyses {
 
 	# Set up URL
 	my $end_point = $self->api_root."analyses";
-	my $res = $self->_ua->get($end_point)->res->json;
-	return $res;
+	my $res = $self->get($end_point);
+	
+	if($res) {
+
+	}
 }
 
 # Get one analysis by id
@@ -106,21 +106,25 @@ sub get_analysis {
 
 	# Set up URL
 	my $end_point = $self->api_root."analyses/$id";
-	my $res = $self->_ua->get($end_point)->res->json;
-	my $analysis = OneCodex::Analysis->new($res);
+	my $res = $self->get($end_point);
+	
+	# returns -1 if error
+	if($res) {
+		my $analysis = Codex::Analysis->new($res);		
+	}
 }
 
 # Get one raw analysis by id
 # id -> id to fetch
+## TODO FIX ME
 sub get_raw_analysis {
 	my ($self, $id) = @_;
 
 	# Set up URL
 	my $end_point = $self->api_root."analyses/$id/raw";
-	my $res = $self->_ua->max_redirects(5)->get($end_point)->res;
+	my $res = $self->_ua->get($end_point)->res;
 	$res->content->asset->move_to("$id-results.tsv.gz");
 	
-
 	if($res->code == 404) {
 		die "Analysis $id was not found";
 	}
@@ -133,9 +137,13 @@ sub get_table_analysis {
 
 	# Set up URL
 	my $end_point = $self->api_root."analyses/$id/table";
-	my $res = $self->_ua->get($end_point)->res;
-	p($res->json);
-	return $res;
+	my $res = $self->get($end_point);
+	
+	if($res) {
+		foreach my $entry (@$res) {
+			my $table = Codex::TableEntry->new($entry);
+		}		
+	}
 }
 
 ## References
@@ -146,8 +154,10 @@ sub get_references {
 
 	# Set up URL
 	my $end_point = $self->api_root."references";
-	my $res = $self->_ua->get($end_point)->res->json;
-	return $res;
+	my $res = $self->get($end_point);
+	if($res) {
+
+	}
 }
 
 # Get one reference by id
@@ -157,15 +167,53 @@ sub get_reference {
 
 	# Set up URL
 	my $end_point = $self->api_root."references/$id";
-	my $res = $self->_ua->get($end_point)->res->json;
-	my $reference = OneCodex::Reference->new($res);
+	my $res = $self->get($end_point);
+	if($res) {
+		my $reference = Codex::Reference->new($res);
+	}
 }
 
 ## Private ##
 
 # Initalize user agent instance
 sub _build_ua {
-	return Mojo::UserAgent->new();
+	return Mojo::UserAgent->new->max_redirects(5);
+}
+
+# Wrapper for making api get calls
+# (Calls via _ua and handles error)
+# Returns json res or -1 (error)
+sub get {
+	my ($self, $end_point) = @_;
+
+	# response object to check
+	my $res = $self->_ua->get($end_point)->res;
+
+	if($res->code eq 404 ) {
+		say "Error: nothing returned from API";
+		return -1;
+	} else {
+		return $res->json;
+	}
+}
+
+# Wrapper for making api post calls
+# (Calls via _ua and handles error)
+# Returns id of uploaded or -1 (error)
+sub post {
+	my ($self, $end_point, $file) = @_;
+	
+	my $res = $self->_ua->post(
+		$end_point => {'Content-Type' => 'multipart/form-data'} => 
+		form => {filename => {file => $file}}
+	)->res;
+
+	if($res->code eq 404 ) {
+		say "Error: could not upload file";
+		return -1;
+	} else {
+		return $$res->json{sample_id};
+	}
 }
 
 1;
