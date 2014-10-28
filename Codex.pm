@@ -1,6 +1,5 @@
 package Codex;
 use Mouse;
-use Data::Printer;
 use feature 'say';
 
 # API objects
