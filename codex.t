@@ -8,7 +8,7 @@ use File::Slurp;
 use Codex;
 
 # Build and check connectivity
-#ok(my $codex = Codex->new(api_key => shift), "Initalized api object");
+ok(my $codex = Codex->new(api_key => shift), "Initalized api object");
 
 # uploads
 #ok(my $uploaded_id = $codex->upload("test.fq"), "Uploaded successfully");
@@ -30,5 +30,15 @@ use Codex;
 #ok(my $reference = $codex->get_reference("16027007dcd142ce"), "Fetched one reference by id");
 #ok(my $name = $reference->name(), "Reference object built correctly");
 #ok($codex->get_raw_analysis("8d7307f2774c4652"));
-#ok(my $table = $codex->get_table_analysis("8d7307f2774c4652"));
 
+
+## Error
+#ok($codex->get_sample("asjhdkasjdhkjasd") == -1, "handeled error correctly");
+
+## Collection
+ok(my $sample_col = $codex->get_samples(), "Fetched all samples and created collection");
+ok(my $sample = $sample_col->pop(), "Popped an element");
+ok(say $sample->filename."\n", "Sample object returned by pop");
+ok(my $analyses_col = $codex->get_analyses(), "Fetched all analyses and created collection");
+ok(my $reference_col = $codex->get_references(), "Fetched all references and created collection");
+ok(my $table = $codex->get_table_analysis("8d7307f2774c4652"));
