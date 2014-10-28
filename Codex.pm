@@ -7,8 +7,12 @@ use feature 'say';
 use Codex::Analysis;
 use Codex::Reference;
 use Codex::Sample;
-use Codex::Collection;
 use Codex::TableEntry;
+use Codex::Collection;
+use Codex::Collection::SampleCollection;
+use Codex::Collection::ReferenceCollection;
+use Codex::Collection::EntryCollection;
+use Codex::Collection::AnalysisCollection;
 
 # For api calls
 use Mojo::UserAgent;
@@ -48,10 +52,8 @@ sub upload {
 
 	# Build and send request
 	my $end_point = $self->api_root."upload";
-	my $post_id = $self->post($end_point, $file);
-	if($post_id) {
-
-	}
+	my $post_id = $self->_post($end_point, $file);
+	return $post_id;
 }
 
 ## Samples
@@ -62,11 +64,16 @@ sub get_samples {
 
 	# Set up URL
 	my $end_point = $self->api_root."samples";
-	my $res = $self->get($end_point);
-	if($res) {
+	my $res = $self->_get($end_point);
+	if($res != -1) {
+		my $sample_col = Codex::Collection::SampleCollection->new;
 		foreach my $sample_json (@$res) {
 			my $sample = Codex::Sample->new($sample_json);
-		}		
+			$sample_col->push($sample);
+		}
+		return $sample_col;
+	} else {
+		return -1;
 	}
 }
 
@@ -77,10 +84,13 @@ sub get_sample {
 
 	# Set up URL
 	my $end_point = $self->api_root."samples/$id";
-	my $res = $self->get($end_point);
-	if($res) {
+	my $res = $self->_get($end_point);
+	
+	if($res != -1) {
 		my $sample = Codex::Sample->new($res);
 		return $sample;		
+	} else {
+		return -1;
 	}
 }
 
@@ -92,10 +102,17 @@ sub get_analyses {
 
 	# Set up URL
 	my $end_point = $self->api_root."analyses";
-	my $res = $self->get($end_point);
+	my $res = $self->_get($end_point);
 	
-	if($res) {
-
+	if($res != -1) {
+		my $analysis_col = Codex::Collection::AnalysisCollection->new;
+		foreach my $analysis_json (@$res) {
+			my $analysis = Codex::Analysis->new($analysis_json);
+			$analysis_col->push($analysis);
+		}
+		return $analysis_col;
+	} else {
+		return -1;
 	}
 }
 
@@ -106,21 +123,23 @@ sub get_analysis {
 
 	# Set up URL
 	my $end_point = $self->api_root."analyses/$id";
-	my $res = $self->get($end_point);
+	my $res = $self->_get($end_point);
 	
 	# returns -1 if error
-	if($res) {
+	if($res != -1) {
 		my $analysis = Codex::Analysis->new($res);		
+	} else {
+		return -1;
 	}
 }
 
 # Get one raw analysis by id
 # id -> id to fetch
-## TODO FIX ME
 sub get_raw_analysis {
 	my ($self, $id) = @_;
 
 	# Set up URL
+	# have to call the _ua explicitly to get the res not json
 	my $end_point = $self->api_root."analyses/$id/raw";
 	my $res = $self->_ua->get($end_point)->res;
 	$res->content->asset->move_to("$id-results.tsv.gz");
@@ -137,12 +156,17 @@ sub get_table_analysis {
 
 	# Set up URL
 	my $end_point = $self->api_root."analyses/$id/table";
-	my $res = $self->get($end_point);
+	my $res = $self->_get($end_point);
 	
-	if($res) {
+	if($res != -1) {
+		my $entry_col = Codex::Collection::EntryCollection->new;
 		foreach my $entry (@$res) {
 			my $table = Codex::TableEntry->new($entry);
-		}		
+			$entry_col->push($table);
+		}
+		return $entry_col;
+	} else {
+		return -1;
 	}
 }
 
@@ -154,9 +178,16 @@ sub get_references {
 
 	# Set up URL
 	my $end_point = $self->api_root."references";
-	my $res = $self->get($end_point);
-	if($res) {
-
+	my $res = $self->_get($end_point);
+	if($res != -1) {
+		my $ref_col = Codex::Collection::ReferenceCollection->new;
+		foreach my $ref_json (@$res) {
+			my $reference = Codex::Reference->new($ref_json);
+			$ref_col->push($reference);
+		}
+		return $ref_col;
+	} else {
+		return -1;
 	}
 }
 
@@ -167,9 +198,11 @@ sub get_reference {
 
 	# Set up URL
 	my $end_point = $self->api_root."references/$id";
-	my $res = $self->get($end_point);
-	if($res) {
+	my $res = $self->_get($end_point);
+	if($res != -1) {
 		my $reference = Codex::Reference->new($res);
+	} else {
+		return -1;
 	}
 }
 
@@ -183,13 +216,13 @@ sub _build_ua {
 # Wrapper for making api get calls
 # (Calls via _ua and handles error)
 # Returns json res or -1 (error)
-sub get {
+sub _get {
 	my ($self, $end_point) = @_;
 
 	# response object to check
 	my $res = $self->_ua->get($end_point)->res;
 
-	if($res->code eq 404 ) {
+	if($res->code == 404 ) {
 		say "Error: nothing returned from API";
 		return -1;
 	} else {
@@ -200,7 +233,7 @@ sub get {
 # Wrapper for making api post calls
 # (Calls via _ua and handles error)
 # Returns id of uploaded or -1 (error)
-sub post {
+sub _post {
 	my ($self, $end_point, $file) = @_;
 	
 	my $res = $self->_ua->post(
@@ -208,11 +241,11 @@ sub post {
 		form => {filename => {file => $file}}
 	)->res;
 
-	if($res->code eq 404 ) {
+	if($res->code == 404 ) {
 		say "Error: could not upload file";
 		return -1;
 	} else {
-		return $$res->json{sample_id};
+		return $res->json->sample_id;
 	}
 }
 

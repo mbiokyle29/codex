@@ -20,22 +20,19 @@ has 'filename'  => (
 # string Human-readable size of the uploaded sample's underlying file, e.g., 4.5MB
 has 'size' => (
 	isa => 'Str',
-	is => 'ro',
-	required => 1
+	is => 'rw',
 );
 
 # int Size of the upload in bytes
 has 'size_bytes'  => (
 	isa => 'Int',
-	is => 'ro',
-	required => 1
+	is => 'rw',
 );
 
 # string Date and time of the upload (in UTC)
 has 'upload_date' => (
 	isa =>'Str',
-	is => 'ro',
-	required => 1
+	is => 'rw',
 );
 
 

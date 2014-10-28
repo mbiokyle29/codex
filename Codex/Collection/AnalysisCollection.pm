@@ -1,0 +1,9 @@
+package Codex::Collection::AnalysisCollection;
+use Mouse;
+extends 'Codex::Collection';
+
+has '+items' => (
+	isa => 'ArrayRef[Codex::Analysis]',
+);
+
+1;

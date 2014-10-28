@@ -1,19 +1,9 @@
 package Codex::Collection::SampleCollection;
 use Mouse;
+extends 'Codex::Collection';
 
-has 'samples' => (
-	isa => 'ArrayRef[Codex::Sample]',
-	is  => 'rw'
+has '+items' => (
+	isa => 'ArrayRef[Codex::Sample]'
 );
 
-# Search the collection
-# can specfiy a search key and optional field to look in
-# default it all
-sub search {
-	my ($self, $key, $field) = @_;
-	
-	foreach my $sample ($self->samples) {
-		
-	}
-
-}
+1;
