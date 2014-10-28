@@ -33,7 +33,7 @@ has 'api_root'  => (
 has '_ua' => (
 	isa => 'Mojo::UserAgent', 
 	is => 'ro', 
-	builder => '_build_ua', 
+	builder => sub { return Mojo::UserAgent->new->max_redirects(5); }
 	lazy => 1
 );
 
@@ -208,11 +208,6 @@ sub get_reference {
 }
 
 ## Private ##
-
-# Initalize user agent instance
-sub _build_ua {
-	return Mojo::UserAgent->new->max_redirects(5);
-}
 
 # Wrapper for making api get calls
 # (Calls via _ua and handles error)
