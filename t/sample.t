@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use warnings;
 use strict;
-use Test::Simple tests => 1;
+use Test::Simple tests => 4;
 use lib "../";
 use Codex;
 

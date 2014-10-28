@@ -146,6 +146,8 @@ sub get_raw_analysis {
 	
 	if($res->code == 404) {
 		die "Analysis $id was not found";
+	} else {
+		return 1;
 	}
 }
 
@@ -245,7 +247,7 @@ sub _post {
 		say "Error: could not upload file";
 		return -1;
 	} else {
-		return $res->json->sample_id;
+		return $res->json->{sample_id};
 	}
 }
 
