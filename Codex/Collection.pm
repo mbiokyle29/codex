@@ -25,5 +25,5 @@ sub _build_items {
 	return [];
 }
 
-
+__PACKAGE__->meta->make_immutable();
 1;

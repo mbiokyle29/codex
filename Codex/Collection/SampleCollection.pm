@@ -6,4 +6,5 @@ has '+items' => (
 	isa => 'ArrayRef[Codex::Sample]'
 );
 
+__PACKAGE__->meta->make_immutable();
 1;

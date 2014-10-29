@@ -25,5 +25,5 @@ has 'tax_id' => (
 	is => 'ro'
 );
 
-
+__PACKAGE__->meta->make_immutable();
 1;
