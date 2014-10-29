@@ -16,7 +16,7 @@ Useage:<br>
   use Codex;
   
   # Create instance, supplying your API key
-  my $codex = Codex->("API KEY");
+  my $codex = Codex->new("API KEY");
   
   # Fetch a sample by sample id
   # returns a Codex::Sample object
