@@ -33,7 +33,7 @@ has 'api_root'  => (
 has '_ua' => (
 	isa => 'Mojo::UserAgent', 
 	is => 'ro', 
-	builder => sub { return Mojo::UserAgent->new->max_redirects(5); }
+	builder => sub { return Mojo::UserAgent->new->max_redirects(5); },
 	lazy => 1
 );
 
