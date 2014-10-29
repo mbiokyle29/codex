@@ -16,6 +16,8 @@ use Codex::Collection::AnalysisCollection;
 # For api calls
 use Mojo::UserAgent;
 
+our $VERSION = "1.0";
+
 has 'api_key' => (
 	isa => 'Str', 
 	is => 'ro', 
