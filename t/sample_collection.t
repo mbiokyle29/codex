@@ -5,6 +5,7 @@ use Test::Simple tests => 2;
 use feature qw|say|;
 use Data::Printer;
 use File::Slurp;
+use lib "../";
 use Codex;
 
 my $sample1 = Codex::Sample->new(
