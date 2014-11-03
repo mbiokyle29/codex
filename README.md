@@ -37,6 +37,11 @@ Useage:<br>
     # do things
   }
   
+  # Search the sample collection - via a hash ref
+  # get all samples in the collection that are fasta files
+  # returns an array
+  my $fasta_files = $sample_collection->search( { filename => '.*\.fasta$' } );
+  
   # upload a read file
   my $uploaded_id = $codex->upload("my_sample_reads.fasta");
 
