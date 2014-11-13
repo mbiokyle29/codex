@@ -1,16 +1,17 @@
 Codex
 --------------------------------------------
-<strong> Note: This is an Unoffical Module and not associated with OneCodex </strong><br><br>
-A Perl module for working with the OneCodex API<br>
+<strong> Note: This is an UNOFFICIAL module and not associated with or supported by OneCodex </strong><br><br>
 
-Requires: <br>
+<h3>A Perl module for consuming the OneCodex API<h3>
+
+<h4>Requires:</h4>
 the Mojolicous web framework - <a href="http://mojolicio.us/">link</a><br>
 the light-weight Mouse object framework  - <a href="http://search.cpan.org/~gfuji/Mouse-2.4.1/lib/Mouse.pm">link</a><br>
 
-Description:<br>
+<h4>Description:</h4>
 This module provides a wrapper around the OneCodex REST api. It simplifies api calls by abstracting away the curl calls into simple method calls. It also provides Mouse objects for all of the api objects (Samples, Analyses, References etc), and typed Collections for working with sets of these objects. Allows for simple integration of the OneCodex api into existing pipelines.
 
-Installation:<br>
+<h4>Installation:</h4>
 ```bash
   git clone https://github.com/mbiokyle29/codex/
   cd codex
@@ -19,7 +20,7 @@ Installation:<br>
   sudo make install
 ```
 
-Useage:<br>
+<h4>Useage:</h4>
 ```perl
   use Codex;
   
