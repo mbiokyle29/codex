@@ -33,15 +33,19 @@ Useage:<br>
   # returns a Codex::Collection object of type Sample
   my $sample_collecion = $codex->get_samples;
   
+  # Get all of the samples in the collection that are completed
+  my $array = $sample_collection->completed_samples # Returns an array of samples
+
+  # Search the sample collection using a hash ref
+  # the keys are the fields to search, values are what to match, can be regex
+
+  # This searches the sample collection for all samples whos filename matches the regex
+  my $fasta_samples = $sample_collection->search( { filename => '.*\.fasta$' } );
+
   # Process each sample
   while(my $sample = $sample_collection->pop) {
-    # do things
+      # Iterate through the samples
   }
-  
-  # Search the sample collection - via a hash ref
-  # get all samples in the collection that are fasta files
-  # returns an array
-  my $fasta_files = $sample_collection->search( { filename => '.*\.fasta$' } );
   
   # upload a read file
   my $uploaded_id = $codex->upload("my_sample_reads.fasta");
