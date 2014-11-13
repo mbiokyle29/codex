@@ -1,7 +1,8 @@
 Codex
 --------------------------------------------
+<strong> Note: This is an Unoffical Module and not associated with OneCodex </strong>
 A Perl module for working with the OneCodex API<br><br>
-<strong> This is an Unoffical Module and not associated with OneCodex </strong>
+
 Requires: <br>
 the Mojolicous web framework - <a href="http://mojolicio.us/">link</a><br>
 the light-weight Mouse object framework  - <a href="http://search.cpan.org/~gfuji/Mouse-2.4.1/lib/Mouse.pm">link</a><br>
