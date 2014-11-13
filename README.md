@@ -1,7 +1,7 @@
 Codex
 --------------------------------------------
-<strong> Note: This is an Unoffical Module and not associated with OneCodex </strong>
-A Perl module for working with the OneCodex API<br><br>
+<strong> Note: This is an Unoffical Module and not associated with OneCodex </strong><br><br>
+A Perl module for working with the OneCodex API<br>
 
 Requires: <br>
 the Mojolicous web framework - <a href="http://mojolicio.us/">link</a><br>
