@@ -1,15 +1,15 @@
 Codex
 --------------------------------------------
-<strong> Note: This is an UNOFFICIAL module and not associated with or supported by OneCodex </strong><br><br>
+<strong> Note: This is an unofficial module for interacting with the One Codex platform </strong><br><br>
 
-<h3>A Perl module for consuming the OneCodex API<h3>
+<h3>A Perl module for consuming the One Codex API<h3>
 
 <h4>Requires:</h4>
 the Mojolicous web framework - <a href="http://mojolicio.us/">link</a><br>
 the light-weight Mouse object framework  - <a href="http://search.cpan.org/~gfuji/Mouse-2.4.1/lib/Mouse.pm">link</a><br>
 
 <h4>Description:</h4>
-This module provides a wrapper around the OneCodex REST api. It simplifies api calls by abstracting away the curl calls into simple method calls. It also provides Mouse objects for all of the api objects (Samples, Analyses, References etc), and typed Collections for working with sets of these objects. Allows for simple integration of the OneCodex api into existing pipelines.
+This module provides a wrapper around the One Codex REST api. It simplifies api calls by abstracting away the curl calls into simple method calls. It also provides Mouse objects for all of the api objects (Samples, Analyses, References etc), and typed Collections for working with sets of these objects. Allows for simple integration of the One Codex api into existing pipelines.
 
 <h4>Installation:</h4>
 ```bash
