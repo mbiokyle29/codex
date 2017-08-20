@@ -12,6 +12,7 @@ the light-weight Mouse object framework  - <a href="http://search.cpan.org/~gfuj
 This module provides a wrapper around the One Codex REST api. It simplifies api calls by abstracting away the curl calls into simple method calls. It also provides Mouse objects for all of the api objects (Samples, Analyses, References etc), and typed Collections for working with sets of these objects. Allows for simple integration of the One Codex api into existing pipelines.
 
 <h4>Installation:</h4>
+
 ```bash
   git clone https://github.com/mbiokyle29/codex/
   cd codex
@@ -21,6 +22,7 @@ This module provides a wrapper around the One Codex REST api. It simplifies api 
 ```
 
 <h4>Useage:</h4>
+
 ```perl
   use Codex;
   
